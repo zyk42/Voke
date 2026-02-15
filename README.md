@@ -66,11 +66,11 @@
         </tr>
         <tr>
             <td align="center" width="50%">
-                <p><b>设置页面 - 常规</b></p>
+                <p><b>设置页面 - 模型配置</b></p>
                 <img src="figures/shezhi1.png" width="100%" />
             </td>
             <td align="center" width="50%">
-                <p><b>设置页面 - 模型</b></p>
+                <p><b>设置页面 - 自定义prompt</b></p>
                 <img src="figures/shezhi2.png" width="100%" />
             </td>
         </tr>
