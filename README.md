@@ -27,21 +27,21 @@
 **开启 AI 润色**，**长按 Right Alt** 说话，松开即可优化表达，让文字更流畅。
 
 <div align="center">
-    <img src="figures/zhuanlu.gif" alt="润色模式" width="600" />
+    <img src="figures/zhuanlu.gif" alt="润色模式" width="400" />
 </div>
 
 ### ⌨️ 指令模式
 **选中文字**，**长按 Right Alt** 说出指令，松开即可精准调整文本内容，满足个性化需求。
 
 <div align="center">
-    <img src="figures/zhiling.gif" alt="指令模式" width="600" />
+    <img src="figures/zhiling.gif" alt="指令模式" width="400" />
 </div>
 
 ### 💡 提问模式
 **长按 Right Ctrl** 说出问题，松开即可得到 AI 回答。
 
 <div align="center">
-    <img src="figures/tiwen.gif" alt="提问模式" width="600" />
+    <img src="figures/tiwen.gif" alt="提问模式" width="400" />
 </div>
 
 ### 📸 界面展示
