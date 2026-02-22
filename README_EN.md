@@ -117,6 +117,15 @@ This command will start both the Electron main process and the Vite renderer pro
 # Build for all platforms
 pnpm run build
 
+# If encountering proxy bypass issues with app-builder
+# For Windows, run the following commands first (7890 is your VPN port)
+# $env:HTTP_PROXY="http://127.0.0.1:7890"
+# $env:HTTPS_PROXY="http://127.0.0.1:7890"
+
+# For macOS/Linux, run the following commands first
+# export HTTP_PROXY="http://127.0.0.1:7890"
+# export HTTPS_PROXY="http://127.0.0.1:7890"
+
 # Build for specific platform
 pnpm run build:win   # Windows
 pnpm run build:mac   # macOS
