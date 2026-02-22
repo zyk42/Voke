@@ -115,8 +115,18 @@ pnpm run dev
 # 构建所有平台
 pnpm run build
 
-# 仅构建特定平台
-pnpm run build:win   # Windows
+# 构建特定平台应用
+
+#如果遇到app-builder不走代理问题
+#windows先运行以下命令（7890为你的vpn端口）
+#$env:HTTP_PROXY="http://127.0.0.1:7890"
+#$env:HTTPS_PROXY="http://127.0.0.1:7890"
+
+#mac/linux先运行以下命令
+#export HTTP_PROXY="http://127.0.0.1:7890"
+#export HTTPS_PROXY="http://127.0.0.1:7890"
+
+pnpm run build:win   # Windows  
 pnpm run build:mac   # macOS
 pnpm run build:linux # Linux
 ```
