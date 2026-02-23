@@ -16,8 +16,17 @@ const SettingsPage = ({ isEmbedded = false }) => {
     enable_ai_optimization: true,
     ai_prompt_optimize: "",
     ai_prompt_command: "",
-    ai_prompt_ask: ""
+    ai_prompt_ask: "",
+    hotkey_optimize: "RightAlt",
+    hotkey_ask: "RightControl"
   });
+
+  const availableHotkeys = [
+    { label: "Right Alt", value: "RightAlt" },
+    { label: "Right Control", value: "RightControl" },
+    { label: "Left Alt", value: "LeftAlt" },
+    { label: "Left Control", value: "LeftControl" }
+  ];
 
   const defaultOptimizePrompt = `## 角色
 专业ASR语音转录文本优化助手，对初步转录文本进行去除言语干扰噪音，保留说话人原始意图、个人风格及用语习惯。
@@ -67,7 +76,8 @@ const SettingsPage = ({ isEmbedded = false }) => {
 
 ## 输入与输出
 ### 输入：
-用户的语音转录文本：\${text}
+1. 选中的文本（可选，如果没有则为空直接回答问题即可）： \${selectedText}
+2. 用户的语音转录文本：\${text}
 
 ### 输出：
 直接返回你的回答。`;
@@ -114,7 +124,9 @@ const SettingsPage = ({ isEmbedded = false }) => {
           enable_ai_optimization: allSettings.enable_ai_optimization !== false, // 默认为true
           ai_prompt_optimize: allSettings.ai_prompt_optimize || defaultOptimizePrompt,
           ai_prompt_command: allSettings.ai_prompt_command || defaultCommandPrompt,
-          ai_prompt_ask: allSettings.ai_prompt_ask || defaultAskPrompt
+          ai_prompt_ask: allSettings.ai_prompt_ask || defaultAskPrompt,
+          hotkey_optimize: allSettings.hotkey_optimize || "RightAlt",
+          hotkey_ask: allSettings.hotkey_ask || "RightControl"
         };
         setSettings(prev => ({ ...prev, ...loadedSettings }));
       }
@@ -142,6 +154,8 @@ const SettingsPage = ({ isEmbedded = false }) => {
         await window.electronAPI.setSetting('ai_prompt_optimize', settings.ai_prompt_optimize);
         await window.electronAPI.setSetting('ai_prompt_command', settings.ai_prompt_command);
         await window.electronAPI.setSetting('ai_prompt_ask', settings.ai_prompt_ask);
+        await window.electronAPI.setSetting('hotkey_optimize', settings.hotkey_optimize);
+        await window.electronAPI.setSetting('hotkey_ask', settings.hotkey_ask);
         
         toast.success("设置保存成功");
       }
@@ -256,6 +270,65 @@ const SettingsPage = ({ isEmbedded = false }) => {
       <div className="flex-1 overflow-y-auto min-h-0">
         <div className="max-w-3xl mx-auto p-8 pb-12 space-y-8">
           {/* 权限管理部分 */}
+          {/* 快捷键设置 */}
+          <section>
+            <div className="mb-4 ml-1">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-white tracking-wide uppercase">
+                快捷键设置
+              </h2>
+            </div>
+            <div className="bg-white dark:bg-black rounded-2xl p-1 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-100 dark:border-zinc-800">
+              <div className="p-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center">
+                      <Mic className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-medium text-slate-900 dark:text-white">录音润色/指令模式</h3>
+                      <p className="text-xs text-slate-500 dark:text-gray-400">长按进行录音，松开后自动优化文本或执行指令</p>
+                    </div>
+                  </div>
+                  <select
+                    value={settings.hotkey_optimize}
+                    onChange={(e) => handleInputChange('hotkey_optimize', e.target.value)}
+                    className="px-3 py-2 text-sm border border-slate-200 dark:border-zinc-800 rounded-lg bg-white dark:bg-zinc-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                  >
+                    {availableHotkeys.map(key => (
+                      <option key={key.value} value={key.value} disabled={settings.hotkey_ask === key.value}>
+                        {key.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
+                      <Mic className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-medium text-slate-900 dark:text-white">提问模式</h3>
+                      <p className="text-xs text-slate-500 dark:text-gray-400">长按进行提问，松开后AI回答问题</p>
+                    </div>
+                  </div>
+                  <select
+                    value={settings.hotkey_ask}
+                    onChange={(e) => handleInputChange('hotkey_ask', e.target.value)}
+                    className="px-3 py-2 text-sm border border-slate-200 dark:border-zinc-800 rounded-lg bg-white dark:bg-zinc-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none"
+                  >
+                    {availableHotkeys.map(key => (
+                      <option key={key.value} value={key.value} disabled={settings.hotkey_optimize === key.value}>
+                        {key.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 权限测试 */}
           <section>
             <div className="mb-4 ml-1">
               <h2 className="text-sm font-semibold text-slate-900 dark:text-white tracking-wide uppercase">
@@ -455,7 +528,8 @@ const SettingsPage = ({ isEmbedded = false }) => {
                     className="w-full px-4 py-3 text-xs border border-slate-200 dark:border-zinc-800 rounded-xl focus:ring-2 focus:ring-slate-900/5 dark:focus:ring-white/10 focus:border-slate-400 dark:focus:border-white bg-white dark:bg-zinc-900 text-slate-700 dark:text-gray-300 font-mono transition-all outline-none resize-y"
                   />
                   <p className="mt-2 text-xs text-slate-400 dark:text-gray-500">
-                    提示词中需要含有 <code className="bg-slate-100 dark:bg-zinc-800 px-1 py-0.5 rounded text-slate-600 dark:text-gray-300 font-mono">{'${text}'}</code>
+                    提示词中需要含有 <code className="bg-slate-100 dark:bg-zinc-800 px-1 py-0.5 rounded text-slate-600 dark:text-gray-300 font-mono">{'${text}'}</code>。
+                    
                   </p>
                 </div>
 
@@ -508,6 +582,7 @@ const SettingsPage = ({ isEmbedded = false }) => {
                   />
                   <p className="mt-2 text-xs text-slate-400 dark:text-gray-500">
                     提示词中需要含有 <code className="bg-slate-100 dark:bg-zinc-800 px-1 py-0.5 rounded text-slate-600 dark:text-gray-300 font-mono">{'${text}'}</code>
+                    ，可选变量：<code className="bg-slate-100 dark:bg-zinc-800 px-1 py-0.5 rounded text-slate-600 dark:text-gray-300 font-mono">{'${selectedText}'}</code>（选中的文本）
                   </p>
                 </div>
               </div>
