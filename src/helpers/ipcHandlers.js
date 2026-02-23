@@ -142,8 +142,17 @@ class IPCHandlers {
       return this.databaseManager.getSetting(key, defaultValue);
     });
 
-    ipcMain.handle("set-setting", (event, key, value) => {
-      return this.databaseManager.setSetting(key, value);
+    ipcMain.handle("set-setting", async (event, key, value) => {
+      const result = await this.databaseManager.setSetting(key, value);
+      
+      // 如果是热键设置改变，通知主窗口更新
+      if (key === 'hotkey_optimize' || key === 'hotkey_ask') {
+        if (this.windowManager.mainWindow && !this.windowManager.mainWindow.isDestroyed()) {
+          this.windowManager.mainWindow.webContents.send('hotkey-settings-changed', { key, value });
+        }
+      }
+      
+      return result;
     });
 
     ipcMain.handle("get-all-settings", () => {
@@ -378,8 +387,8 @@ class IPCHandlers {
               
               // Find main window and send event
               if (this.windowManager.mainWindow && !this.windowManager.mainWindow.isDestroyed()) {
-                if ((hotkey === 'RightAlt' || hotkey === 'RightControl') && action) {
-                  // Right Alt 和 Right Control 区分按下和松开
+                // 如果回调带有 action 参数（down/up），说明是修饰键长按模式
+                if (action) {
                   if (action === 'down') {
                     this.windowManager.mainWindow.webContents.send("hotkey-pressed", hotkey);
                   } else if (action === 'up') {
@@ -425,6 +434,14 @@ class IPCHandlers {
       try {
         if (this.hotkeyManager) {
           const success = this.hotkeyManager.unregisterHotkey(hotkey);
+          
+          // 从发送者跟踪列表中移除
+          const senderId = event.sender.id;
+          if (this.hotkeyRegisteredSenders && this.hotkeyRegisteredSenders.has(senderId)) {
+            this.hotkeyRegisteredSenders.get(senderId).delete(hotkey);
+            this.logger.debug(`发送者 ${senderId} 注销热键 ${hotkey}`);
+          }
+          
           return { success };
         }
         return { success: false, error: "热键管理器未初始化" };
@@ -890,6 +907,19 @@ class IPCHandlers {
         // 提问模式：使用提问提示词
         prompt = customAskPrompt ? customAskPrompt : defaultAskPrompt;
         prompt = prompt.replace(/\${text}/g, text);
+        
+        // Handle selected text in ask mode
+        if (selectedText && selectedText.trim().length > 0) {
+          if (prompt.includes('${selectedText}')) {
+            prompt = prompt.replace(/\${selectedText}/g, selectedText);
+          } else {
+            // If prompt doesn't have the placeholder, append context
+            prompt += `\n\n### 选中的上下文：\n${selectedText}`;
+          }
+        } else {
+            // Clean up unused placeholder if present
+            prompt = prompt.replace(/\${selectedText}/g, '');
+        }
       } else {
         // 优化模式：使用优化提示词
         let basePrompt = customOptimizePrompt ? customOptimizePrompt : defaultOptimizePrompt;
