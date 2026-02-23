@@ -331,7 +331,13 @@ export const useRecording = () => {
                   const result = await window.electronAPI.processText(raw_text, mode, selectedText);
 
                   if (result && result.success) {
-                    const processed_text = result.text;
+                    let processed_text = result.text;
+                    
+                    // 提问模式下，如果有选中文本，将原文本拼接在前面，实现"追加"效果
+                    if (recordingModeRef.current === 'ask' && selectedText && selectedText.trim().length > 0) {
+                      processed_text = `${selectedText}\n\n${processed_text}`;
+                    }
+
                     finalData.processed_text = processed_text;
                     // 如果AI优化后的文本与原始文本不同，则将优化后的文本作为主文本
                     if (processed_text && processed_text.trim() !== raw_text.trim()) {
