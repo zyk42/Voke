@@ -66,6 +66,9 @@ export default function App() {
     error: textProcessingError
   } = useTextProcessing();
 
+  // 用于存储当前热键映射的 ref
+  const hotkeyMapRef = useRef({ optimize: 'RightAlt', ask: 'RightControl' });
+
   // 监听录音状态，更新 Overlay
   useEffect(() => {
     if (window.electronAPI && window.electronAPI.updateOverlayState) {
@@ -237,7 +240,61 @@ export default function App() {
   }, [isRecording, isRecordingProcessing, startRecording, stopRecording]);
 
   // 使用热键Hook
-  const { hotkey, syncRecordingState, registerHotkey } = useHotkey();
+  const { hotkey, syncRecordingState, registerHotkey, unregisterHotkey } = useHotkey();
+
+  // 监听热键设置变更
+  useEffect(() => {
+    // 检查是否为控制面板窗口
+    const urlParams = new URLSearchParams(window.location.search);
+    const isControlPanel = urlParams.get('panel') === 'control';
+    
+    if (isControlPanel) return;
+
+    if (window.electronAPI && window.electronAPI.onHotkeySettingsChanged) {
+      const unsubscribe = window.electronAPI.onHotkeySettingsChanged(async (_event, { key, value }) => {
+        console.log('热键设置已更新:', key, value);
+        
+        let oldHotkey = null;
+        let type = null;
+
+        if (key === 'hotkey_optimize') {
+          oldHotkey = hotkeyMapRef.current.optimize;
+          hotkeyMapRef.current.optimize = value;
+          type = 'Optimize';
+          
+          // 只有当旧热键没有被另一个模式使用时才注销
+          if (oldHotkey && oldHotkey !== value && oldHotkey !== hotkeyMapRef.current.ask) {
+            await unregisterHotkey(oldHotkey);
+            console.log(`注销旧热键 (${type}): ${oldHotkey}`);
+          }
+        } else if (key === 'hotkey_ask') {
+          oldHotkey = hotkeyMapRef.current.ask;
+          hotkeyMapRef.current.ask = value;
+          type = 'Ask';
+          
+          // 只有当旧热键没有被另一个模式使用时才注销
+          if (oldHotkey && oldHotkey !== value && oldHotkey !== hotkeyMapRef.current.optimize) {
+            await unregisterHotkey(oldHotkey);
+            console.log(`注销旧热键 (${type}): ${oldHotkey}`);
+          }
+        }
+
+        // 注册新热键
+        if (value) {
+          const success = await registerHotkey(value);
+          if (success) {
+            console.log(`注册新热键成功 (${type}): ${value}`);
+            toast.success(`${type === 'Optimize' ? '指令' : '提问'}模式快捷键已更新`);
+          } else {
+            console.error(`注册新热键失败 (${type}): ${value}`);
+            toast.error(`更新快捷键失败`);
+          }
+        }
+      });
+      
+      return unsubscribe;
+    }
+  }, [registerHotkey, unregisterHotkey]);
 
   // 注册传统热键监听 - 只在主窗口注册，避免重复
   useEffect(() => {
@@ -253,23 +310,36 @@ export default function App() {
 
     const initializeHotkey = async () => {
       try {
-        // 注册 Right Control 热键 (通过 uIOhook 实现)
-        const successCtrl = await registerHotkey('RightControl');
-        if (successCtrl) {
-          console.log('主窗口热键注册成功 (RightControl)');
+        // 获取配置的热键
+        let hotkeyOptimize = 'RightAlt';
+        let hotkeyAsk = 'RightControl';
+        
+        if (window.electronAPI && window.electronAPI.getAllSettings) {
+          const settings = await window.electronAPI.getAllSettings();
+          if (settings.hotkey_optimize) hotkeyOptimize = settings.hotkey_optimize;
+          if (settings.hotkey_ask) hotkeyAsk = settings.hotkey_ask;
+        }
+        
+        hotkeyMapRef.current = { optimize: hotkeyOptimize, ask: hotkeyAsk };
+        console.log('初始化热键映射:', hotkeyMapRef.current);
+
+        // 注册 优化/指令模式 热键
+        const successOptimize = await registerHotkey(hotkeyOptimize);
+        if (successOptimize) {
+          console.log(`主窗口热键注册成功 (Optimize: ${hotkeyOptimize})`);
         } else {
-          console.error('主窗口热键注册失败 (RightControl)');
+          console.error(`主窗口热键注册失败 (Optimize: ${hotkeyOptimize})`);
         }
 
-        // 注册 Right Alt 热键 (通过 uIOhook 实现)
-        const successAlt = await registerHotkey('RightAlt');
-        if (successAlt) {
-          console.log('主窗口热键注册成功 (RightAlt)');
+        // 注册 提问模式 热键
+        const successAsk = await registerHotkey(hotkeyAsk);
+        if (successAsk) {
+          console.log(`主窗口热键注册成功 (Ask: ${hotkeyAsk})`);
         } else {
-          console.error('主窗口热键注册失败 (RightAlt)');
+          console.error(`主窗口热键注册失败 (Ask: ${hotkeyAsk})`);
         }
 
-        if (!successAlt && !successCtrl) {
+        if (!successOptimize && !successAsk) {
           toast.error("注册快捷键失败");
         }
       } catch (error) {
@@ -307,8 +377,10 @@ export default function App() {
           
           // 根据热键决定模式
           let mode = 'optimize';
-          if (hotkey === 'RightControl') {
+          if (hotkey === hotkeyMapRef.current.ask) {
             mode = 'ask';
+          } else if (hotkey === hotkeyMapRef.current.optimize) {
+            mode = 'optimize';
           }
 
           // 只有在空闲状态才开始录音
