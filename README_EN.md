@@ -4,7 +4,7 @@
 
 **TalkType · AI Voice Transcription Assistant**
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-green)
 
 [中文](README.md) | [English](README_EN.md)
 
@@ -83,7 +83,7 @@
 
 TalkType provides installers for Windows, macOS, and Linux platforms.
 
-- **Windows**: [Download](https://github.com/zyk42/TalkType/releases/download/v1.0.0/TalkType.Setup.1.0.0.exe)
+- **Windows**: [Download](https://github.com/zyk42/TalkType/releases/download/v1.0.0/TalkType.Setup.1.0.1.exe)
 - **macOS**: *(Coming Soon)*
 - **Linux**: *(Coming Soon)*
 
