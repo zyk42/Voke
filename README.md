@@ -112,8 +112,6 @@ pnpm run dev
 
 ### 5. 构建打包
 ```bash
-# 构建所有平台
-pnpm run build
 
 # 构建特定平台应用
 
