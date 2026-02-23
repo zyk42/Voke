@@ -4,7 +4,7 @@
 
 **TalkType · AI 语音转录助手**
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-green)
 [中文](README.md) | [English](README_EN.md)
 </div>
 
