@@ -114,8 +114,6 @@ This command will start both the Electron main process and the Vite renderer pro
 
 ### 5. Build
 ```bash
-# Build for all platforms
-pnpm run build
 
 # If encountering proxy bypass issues with app-builder
 # For Windows, run the following commands first (7890 is your VPN port)
