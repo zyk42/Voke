@@ -12,7 +12,7 @@ export const UsageGuide = () => {
           </div>
           <h4 className="font-semibold text-slate-900 dark:text-white text-sm">转录模式</h4>
           <p className="text-xs text-slate-500 dark:text-gray-400 leading-relaxed">
-            文本光标处，长按 Right Alt 说话，松开即可转写为文字。
+            文本光标处，长按设定快捷键（默认 Right Alt）说话，松开即可转写为文字。
           </p>
         </div>
 
@@ -22,7 +22,7 @@ export const UsageGuide = () => {
           </div>
           <h4 className="font-semibold text-slate-900 dark:text-white text-sm">润色模式</h4>
           <p className="text-xs text-slate-500 dark:text-gray-400 leading-relaxed">
-            开启AI润色，长按 Right Alt 说话，松开即可优化表达，让文字更流畅。
+            开启AI润色，长按设定快捷键（默认 Right Alt）说话，松开即可优化表达，让文字更流畅。
           </p>
         </div>
 
@@ -32,7 +32,7 @@ export const UsageGuide = () => {
           </div>
           <h4 className="font-semibold text-slate-900 dark:text-white text-sm">指令模式</h4>
           <p className="text-xs text-slate-500 dark:text-gray-400 leading-relaxed">
-            选中文字，长按 Right Alt 说出指令，松开即可精准调整文本内容，满足个性化需求。
+            选中文字，长按设定快捷键（默认 Right Alt）说出指令，松开即可精准调整文本内容，满足个性化需求。
           </p>
         </div>
 
@@ -42,7 +42,7 @@ export const UsageGuide = () => {
           </div>
           <h4 className="font-semibold text-slate-900 dark:text-white text-sm">提问模式</h4>
           <p className="text-xs text-slate-500 dark:text-gray-400 leading-relaxed">
-            长按 Right Ctrl 说出问题，松开即可得到 AI 回答。
+            长按设定快捷键（默认 Right Ctrl）说出问题，松开即可得到 AI 回答。若选中文字提问，回答将追加在选中文本后。
           </p>
         </div>
       </div>
