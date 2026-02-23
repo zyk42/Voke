@@ -6,9 +6,24 @@ class HotkeyManager {
     this.registeredHotkeys = new Map();
     this.isRecording = false;
     this.logger = logger;
-    this.isRightAltDown = false; // 跟踪 Right Alt 状态
-    this.isRightControlDown = false; // 跟踪 Right Control 状态
     
+    // 跟踪所有支持的修饰键状态
+    this.keyStates = new Map(); // keyName -> boolean
+    
+    // 支持的修饰键
+    this.SUPPORTED_KEYS = {
+      'RightAlt': UiohookKey.AltRight,
+      'RightControl': UiohookKey.CtrlRight,
+      'LeftAlt': UiohookKey.Alt,
+      'LeftControl': UiohookKey.Ctrl
+    };
+    
+    // 反向映射：keycode -> keyName
+    this.KEYCODE_TO_NAME = {};
+    Object.entries(this.SUPPORTED_KEYS).forEach(([name, code]) => {
+      this.KEYCODE_TO_NAME[code] = name;
+    });
+
     // 简化的热键防抖机制
     this.lastHotkeyTrigger = new Map();
     this.hotkeyDebounceTime = 50; // 50ms防抖时间，支持快速连击
@@ -19,127 +34,81 @@ class HotkeyManager {
 
   initUiohook() {
     uIOhook.on('keydown', (e) => {
-      // 3640 is the raw code for Right Alt on some systems, but UiohookKey.AltRight is safer
-      // UiohookKey.AltRight (usually 0x0038 with extended flag, or specifically 3640 in raw)
-      // On Windows: AltLeft is 56, AltRight is 3640
-      
-      if (e.keycode === UiohookKey.AltRight) {
-        this.handleRightAltDown();
-      }
-      
-      if (e.keycode === UiohookKey.CtrlRight) {
-        this.handleRightControlDown();
+      const keyName = this.KEYCODE_TO_NAME[e.keycode];
+      if (keyName) {
+        this.handleModifierDown(keyName);
       }
     });
 
     uIOhook.on('keyup', (e) => {
-      if (e.keycode === UiohookKey.AltRight) {
-        this.handleRightAltUp();
-      }
-
-      if (e.keycode === UiohookKey.CtrlRight) {
-        this.handleRightControlUp();
+      const keyName = this.KEYCODE_TO_NAME[e.keycode];
+      if (keyName) {
+        this.handleModifierUp(keyName);
       }
     });
 
     uIOhook.start();
     
     if (this.logger && this.logger.info) {
-      this.logger.info('uIOhook 已启动，监听 Right Alt 和 Right Control');
+      this.logger.info('uIOhook 已启动，监听修饰键');
     }
   }
 
-  handleRightAltDown() {
+  handleModifierDown(keyName) {
     const now = Date.now();
     // 只有当之前没有按下时才触发（防重复）
-    if (this.isRightAltDown) return;
+    if (this.keyStates.get(keyName)) return;
     
-    this.isRightAltDown = true;
-    this.lastHotkeyTrigger.set('RightAlt', now);
+    this.keyStates.set(keyName, true);
+    this.lastHotkeyTrigger.set(keyName, now);
     
-    // 如果注册了 Right Alt 的回调
-    if (this.registeredHotkeys.has('RightAlt')) {
-      const callback = this.registeredHotkeys.get('RightAlt');
+    // 如果注册了该键的回调（单键模式）
+    if (this.registeredHotkeys.has(keyName)) {
+      const callback = this.registeredHotkeys.get(keyName);
       // 传递 'down' 状态
-      callback('down');
-      if (this.logger && this.logger.info) {
-        this.logger.info('触发 Right Alt 按下');
+      if (typeof callback === 'function') {
+        callback('down');
+        if (this.logger && this.logger.info) {
+          this.logger.info(`触发 ${keyName} 按下`);
+        }
       }
     }
   }
 
-  handleRightAltUp() {
-    if (!this.isRightAltDown) return;
+  handleModifierUp(keyName) {
+    if (!this.keyStates.get(keyName)) return;
     
-    this.isRightAltDown = false;
+    this.keyStates.set(keyName, false);
     
-    // 如果注册了 Right Alt 的回调
-    if (this.registeredHotkeys.has('RightAlt')) {
-      const callback = this.registeredHotkeys.get('RightAlt');
+    // 如果注册了该键的回调
+    if (this.registeredHotkeys.has(keyName)) {
+      const callback = this.registeredHotkeys.get(keyName);
       // 传递 'up' 状态
-      callback('up');
-      if (this.logger && this.logger.info) {
-        this.logger.info('触发 Right Alt 松开');
-      }
-    }
-  }
-
-  handleRightControlDown() {
-    const now = Date.now();
-    // 只有当之前没有按下时才触发（防重复）
-    if (this.isRightControlDown) return;
-    
-    this.isRightControlDown = true;
-    this.lastHotkeyTrigger.set('RightControl', now);
-    
-    // 如果注册了 Right Control 的回调
-    if (this.registeredHotkeys.has('RightControl')) {
-      const callback = this.registeredHotkeys.get('RightControl');
-      // 传递 'down' 状态
-      callback('down');
-      if (this.logger && this.logger.info) {
-        this.logger.info('触发 Right Control 按下');
-      }
-    }
-  }
-
-  handleRightControlUp() {
-    if (!this.isRightControlDown) return;
-    
-    this.isRightControlDown = false;
-    
-    // 如果注册了 Right Control 的回调
-    if (this.registeredHotkeys.has('RightControl')) {
-      const callback = this.registeredHotkeys.get('RightControl');
-      // 传递 'up' 状态
-      callback('up');
-      if (this.logger && this.logger.info) {
-        this.logger.info('触发 Right Control 松开');
+      if (typeof callback === 'function') {
+        callback('up');
+        if (this.logger && this.logger.info) {
+          this.logger.info(`触发 ${keyName} 松开`);
+        }
       }
     }
   }
 
   /**
-   * 注册传统热键（如Cmd+Shift+Space）
+   * 注册热键
    * @param {string} hotkey - 热键组合
    * @param {Function} callback - 回调函数
    */
   registerHotkey(hotkey, callback) {
-    // 特殊处理 Right Alt
-    if (hotkey === 'Alt' || hotkey === 'RightAlt') {
-      if (this.logger && this.logger.info) {
-        this.logger.info(`注册 Right Alt 监听`);
-      }
-      this.registeredHotkeys.set('RightAlt', callback);
-      return true;
-    }
+    // 特殊别名处理
+    if (hotkey === 'Alt') hotkey = 'RightAlt';
+    if (hotkey === 'Control') hotkey = 'RightControl';
 
-    // 特殊处理 Right Control
-    if (hotkey === 'Control' || hotkey === 'RightControl') {
+    // 检查是否为支持的键或组合键（通过 uIOhook 处理）
+    if (this.SUPPORTED_KEYS[hotkey]) {
       if (this.logger && this.logger.info) {
-        this.logger.info(`注册 Right Control 监听`);
+        this.logger.info(`注册热键监听: ${hotkey}`);
       }
-      this.registeredHotkeys.set('RightControl', callback);
+      this.registeredHotkeys.set(hotkey, callback);
       return true;
     }
 
@@ -186,9 +155,22 @@ class HotkeyManager {
    * @param {string} hotkey - 热键组合
    */
   unregisterHotkey(hotkey) {
+    // 特殊别名处理
+    if (hotkey === 'Alt') hotkey = 'RightAlt';
+    if (hotkey === 'Control') hotkey = 'RightControl';
+
     if (this.registeredHotkeys.has(hotkey)) {
-      globalShortcut.unregister(hotkey);
-      this.registeredHotkeys.delete(hotkey);
+      // 如果是支持的键，只需要从 map 中删除
+      if (this.SUPPORTED_KEYS[hotkey]) {
+        this.registeredHotkeys.delete(hotkey);
+        // 重置按键状态
+        this.keyStates.set(hotkey, false);
+      } else {
+        // 如果是普通热键，需要调用 globalShortcut.unregister
+        globalShortcut.unregister(hotkey);
+        this.registeredHotkeys.delete(hotkey);
+      }
+      
       if (this.logger && this.logger.info) {
         this.logger.info(`热键 ${hotkey} 已注销`);
       }
