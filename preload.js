@@ -89,6 +89,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
     return () => ipcRenderer.removeListener("hotkey-released", callback);
   },
 
+  onHotkeySettingsChanged: (callback) => {
+    ipcRenderer.on("hotkey-settings-changed", callback);
+    return () => ipcRenderer.removeListener("hotkey-settings-changed", callback);
+  },
+
   // Overlay
   updateOverlayState: (state) => ipcRenderer.invoke("update-overlay-state", state),
   onOverlayStateUpdate: (callback) => {
