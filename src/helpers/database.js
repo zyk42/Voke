@@ -75,6 +75,15 @@ class DatabaseManager {
       )
     `);
 
+    // 创建热词表
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS hotwords (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        word TEXT NOT NULL UNIQUE,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     // 创建索引
     this.db.exec(`
       CREATE INDEX IF NOT EXISTS idx_transcriptions_created_at 
@@ -307,6 +316,32 @@ class DatabaseManager {
     }
     
     return settings;
+  }
+
+  // 热词相关方法
+  addHotword(word) {
+    if (!word || !word.trim()) {
+      throw new Error('热词不能为空');
+    }
+    try {
+      const stmt = this.db.prepare("INSERT INTO hotwords (word) VALUES (?)");
+      return stmt.run(word.trim());
+    } catch (error) {
+      if (error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+        throw new Error('该热词已存在');
+      }
+      throw error;
+    }
+  }
+
+  deleteHotword(id) {
+    const stmt = this.db.prepare("DELETE FROM hotwords WHERE id = ?");
+    return stmt.run(id);
+  }
+
+  getHotwords() {
+    const stmt = this.db.prepare("SELECT * FROM hotwords ORDER BY created_at DESC");
+    return stmt.all();
   }
 
   resetSettings() {
