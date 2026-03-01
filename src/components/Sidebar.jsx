@@ -1,11 +1,12 @@
 import React from "react";
-import { Home, History, Settings, Info, BarChart2 } from "lucide-react";
+import { Home, History, Settings, Info, BarChart2, Flame } from "lucide-react";
 import logo from "../assets/logo.png";
 
 const Sidebar = ({ activeTab, onTabChange }) => {
   const navItems = [
     { id: 'home', label: '首页', icon: Home },
     { id: 'history', label: '历史', icon: History },
+    { id: 'hotwords', label: '热词', icon: Flame },
     { id: 'statistics', label: '统计', icon: BarChart2 },
     { id: 'settings', label: '设置', icon: Settings },
   ];
