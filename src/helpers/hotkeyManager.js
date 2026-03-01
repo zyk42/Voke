@@ -1,14 +1,25 @@
 const { globalShortcut } = require('electron');
 const { uIOhook, UiohookKey } = require('uiohook-napi');
+const EventEmitter = require('events');
 
-class HotkeyManager {
+class HotkeyManager extends EventEmitter {
   constructor(logger = null) {
+    super();
     this.registeredHotkeys = new Map();
     this.isRecording = false;
     this.logger = logger;
     
     // 跟踪所有支持的修饰键状态
     this.keyStates = new Map(); // keyName -> boolean
+    
+    // 打字监控状态
+    this.typingMonitorEnabled = true;
+    this.keystrokeCount = 0;
+    this.lastKeystrokeTime = 0;
+    this.TYPING_THRESHOLD = 24; // 连续打字字符数阈值
+    this.TYPING_GAP_THRESHOLD = 5000; // 5秒内无输入则重置计数
+    this.suggestionCooldown = 0;
+    this.COOLDOWN_DURATION = 5 * 60 * 1000; // 5分钟冷却时间
     
     // 支持的修饰键
     this.SUPPORTED_KEYS = {
@@ -34,6 +45,9 @@ class HotkeyManager {
 
   initUiohook() {
     uIOhook.on('keydown', (e) => {
+      // 监控打字行为
+      this.monitorTyping();
+
       const keyName = this.KEYCODE_TO_NAME[e.keycode];
       if (keyName) {
         this.handleModifierDown(keyName);
@@ -53,6 +67,43 @@ class HotkeyManager {
       this.logger.info('uIOhook 已启动，监听修饰键');
     }
   }
+
+  monitorTyping() {
+    if (!this.typingMonitorEnabled) return;
+    if (this.isRecording) return; // 录音时不需要提示
+
+    const now = Date.now();
+    
+    // 如果超过间隔阈值，重置计数
+    if (now - this.lastKeystrokeTime > this.TYPING_GAP_THRESHOLD) {
+      this.keystrokeCount = 0;
+    }
+    
+    this.keystrokeCount++;
+    this.lastKeystrokeTime = now;
+    
+    // 检查是否达到触发阈值
+    if (this.keystrokeCount >= this.TYPING_THRESHOLD) {
+      // 检查冷却时间
+      if (now > this.suggestionCooldown) {
+        this.emit('typing-suggestion');
+        this.suggestionCooldown = now + this.COOLDOWN_DURATION;
+        this.keystrokeCount = 0; // 重置计数
+        if (this.logger && this.logger.info) {
+          this.logger.info('触发打字提示建议');
+        }
+      }
+    }
+  }
+
+  /**
+   * 设置打字监控是否启用
+   * @param {boolean} enabled 
+   */
+  setTypingMonitorEnabled(enabled) {
+    this.typingMonitorEnabled = enabled;
+  }
+
 
   handleModifierDown(keyName) {
     const now = Date.now();
