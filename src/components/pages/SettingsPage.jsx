@@ -18,7 +18,8 @@ const SettingsPage = ({ isEmbedded = false }) => {
     ai_prompt_command: "",
     ai_prompt_ask: "",
     hotkey_optimize: "RightAlt",
-    hotkey_ask: "RightControl"
+    hotkey_ask: "RightControl",
+    typing_monitor_enabled: true
   });
 
   const availableHotkeys = [
@@ -416,6 +417,52 @@ const SettingsPage = ({ isEmbedded = false }) => {
                     placeholder="qwen3-asr-flash"
                     className="w-full px-4 py-3 text-sm border border-slate-200 dark:border-zinc-800 rounded-xl focus:ring-2 focus:ring-slate-900/5 dark:focus:ring-white/10 focus:border-slate-400 dark:focus:border-white bg-white dark:bg-zinc-900 text-slate-900 dark:text-white transition-all outline-none"
                   />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 智能助手配置 */}
+          <section>
+            <div className="mb-4 ml-1 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-white tracking-wide uppercase">
+                智能助手配置
+              </h2>
+            </div>
+            
+            <div className="bg-white dark:bg-black rounded-2xl shadow-[0_2px_15px_rgba(0,0,0,0.03)] border border-slate-100 dark:border-zinc-800 transition-all hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+              <div className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-500/10 rounded-lg">
+                      <Mic className="w-5 h-5 text-blue-500" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-medium text-slate-900 dark:text-white">
+                        打字疲劳提醒
+                      </h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        当您长时间连续打字时，提示您使用语音输入，更快速精准
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <button
+                     type="button"
+                     role="switch"
+                     aria-checked={settings.typing_monitor_enabled}
+                     onClick={() => handleInputChange('typing_monitor_enabled', !settings.typing_monitor_enabled)}
+                     className={`${
+                       settings.typing_monitor_enabled ? 'bg-slate-900 dark:bg-white' : 'bg-slate-200 dark:bg-zinc-800'
+                     } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none`}
+                   >
+                     <span
+                       aria-hidden="true"
+                       className={`${
+                         settings.typing_monitor_enabled ? 'translate-x-5 bg-white dark:bg-black' : 'translate-x-0 bg-white dark:bg-gray-400'
+                       } inline-block h-5 w-5 transform rounded-full shadow ring-0 transition duration-200 ease-in-out`}
+                     />
+                   </button>
                 </div>
               </div>
             </div>
