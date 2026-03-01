@@ -1,4 +1,4 @@
-const { BrowserWindow } = require("electron");
+const { BrowserWindow, Menu, MenuItem } = require("electron");
 const path = require("path");
 
 class WindowManager {
@@ -9,6 +9,11 @@ class WindowManager {
     this.historyWindow = null;
     this.settingsWindow = null;
     this.isQuitting = false;
+    this.databaseManager = null;
+  }
+
+  setDatabaseManager(dbManager) {
+    this.databaseManager = dbManager;
   }
 
   setQuitting(isQuitting) {
@@ -72,6 +77,20 @@ class WindowManager {
       }
     });
 
+    // 右键菜单
+    this.mainWindow.webContents.on('context-menu', (event, params) => {
+      const menu = new Menu();
+
+      // 添加标准编辑操作
+      menu.append(new MenuItem({ label: '复制', role: 'copy', enabled: params.editFlags.canCopy }));
+      menu.append(new MenuItem({ label: '粘贴', role: 'paste', enabled: params.editFlags.canPaste }));
+      menu.append(new MenuItem({ label: '剪切', role: 'cut', enabled: params.editFlags.canCut }));
+      menu.append(new MenuItem({ type: 'separator' }));
+      menu.append(new MenuItem({ label: '全选', role: 'selectAll', enabled: params.editFlags.canSelectAll }));
+
+      menu.popup({ window: this.mainWindow });
+    });
+
     return this.mainWindow;
   }
 
@@ -120,6 +139,33 @@ class WindowManager {
     });
 
     return this.overlayWindow;
+  }
+
+  async showTypingSuggestion() {
+    try {
+      const overlay = await this.createOverlayWindow();
+      if (overlay) {
+        // 确保窗口显示
+        overlay.showInactive();
+        
+        // 发送建议模式
+        overlay.webContents.send('overlay-state-update', { 
+          mode: 'suggestion' 
+        });
+
+        // 5秒后自动隐藏
+        setTimeout(() => {
+          if (overlay && !overlay.isDestroyed()) {
+            overlay.webContents.send('overlay-state-update', { 
+              mode: 'idle' 
+            });
+            // overlay.hide(); // OverlayPage handles hiding by rendering null
+          }
+        }, 5000);
+      }
+    } catch (error) {
+      console.error('Failed to show typing suggestion:', error);
+    }
   }
 
   // Unified method to handle navigation
