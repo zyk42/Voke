@@ -54,6 +54,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
   clearAllTranscriptions: () => 
     ipcRenderer.invoke("clear-all-transcriptions"),
 
+  // 热词操作
+  getHotwords: () => ipcRenderer.invoke("get-hotwords"),
+  addHotword: (word) => ipcRenderer.invoke("add-hotword", word),
+  deleteHotword: (id) => ipcRenderer.invoke("delete-hotword", id),
+
   getTranscriptionStats: () => ipcRenderer.invoke("get-transcription-stats"),
   getStatistics: () => ipcRenderer.invoke("get-statistics"),
 
@@ -144,6 +149,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
   onNavigateTo: (callback) => {
     ipcRenderer.on("navigate-to", (event, tabId) => callback(tabId));
     return () => ipcRenderer.removeListener("navigate-to", callback);
+  },
+
+  onHotwordAdded: (callback) => {
+    const subscription = (event, result) => callback(result);
+    ipcRenderer.on("hotword-added", subscription);
+    return () => ipcRenderer.removeListener("hotword-added", subscription);
   },
 
   // 控制面板相关
