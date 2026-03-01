@@ -81,7 +81,7 @@
 
 TalkType 提供 Windows、macOS 和 Linux 三大平台的安装包。
 
-- **Windows**: [点击下载 TalkType v1.0.0](https://github.com/zyk42/TalkType/releases/download/v1.0.0/TalkType.Setup.1.0.1.exe)
+- **Windows**: [点击下载 TalkType v1.0.2](https://github.com/zyk42/TalkType/releases/download/v1.0.2/TalkType.Setup.1.0.2.exe)
 - **macOS**: *(待发布)*
 - **Linux**: *(待发布)*
 
