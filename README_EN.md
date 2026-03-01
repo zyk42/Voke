@@ -83,7 +83,7 @@
 
 TalkType provides installers for Windows, macOS, and Linux platforms.
 
-- **Windows**: [Download](https://github.com/zyk42/TalkType/releases/download/v1.0.0/TalkType.Setup.1.0.1.exe)
+- **Windows**: [Download](https://github.com/zyk42/TalkType/releases/download/v1.0.2/TalkType.Setup.1.0.2.exe)
 - **macOS**: *(Coming Soon)*
 - **Linux**: *(Coming Soon)*
 
