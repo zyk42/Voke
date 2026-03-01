@@ -46,6 +46,9 @@ const aliyunASRManager = new AliyunASRManager(logger); // 传递logger实例
 const trayManager = new TrayManager();
 const hotkeyManager = new HotkeyManager();
 
+// 设置WindowManager的依赖
+windowManager.setDatabaseManager(databaseManager);
+
 // 初始化数据库
 const dataDirectory = environmentManager.ensureDataDirectory();
 databaseManager.initialize(dataDirectory);
