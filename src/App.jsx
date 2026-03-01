@@ -11,6 +11,7 @@ import Sidebar from "./components/Sidebar";
 import { WindowControls } from "./components/WindowControls";
 import { HomePage } from "./components/pages/HomePage";
 import { HistoryPage } from "./components/pages/HistoryPage";
+import { HotwordsPage } from "./components/pages/HotwordsPage";
 import StatisticsPage from "./components/pages/StatisticsPage";
 import { AboutPage } from "./components/pages/AboutPage";
 import OverlayPage from "./components/pages/OverlayPage";
@@ -435,7 +436,8 @@ export default function App() {
 
   // 监听键盘事件
   useEffect(() => {
-    const handleKeyPress = (e) => {
+    const handleKeyPress = async (e) => {
+      // ESC 关闭窗口
       if (e.key === "Escape") {
         handleClose();
       }
@@ -494,6 +496,12 @@ export default function App() {
           {activeTab === 'history' && (
            <div className="h-full overflow-hidden">
              <HistoryPage isEmbedded={true} />
+           </div>
+        )}
+
+        {activeTab === 'hotwords' && (
+           <div className="h-full overflow-hidden">
+             <HotwordsPage />
            </div>
         )}
 
