@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Mic } from 'lucide-react';
 
 const OverlayPage = () => {
   const [mode, setMode] = useState('idle');
@@ -18,6 +19,7 @@ const OverlayPage = () => {
     <div className="w-full h-full flex items-center justify-center overflow-hidden">
       {mode === 'recording' && <Waveform />}
       {mode === 'processing' && <Spinner />}
+      {mode === 'suggestion' && <Suggestion />}
     </div>
   );
 };
@@ -56,6 +58,22 @@ const Spinner = () => (
        <div className="w-2 h-2 bg-slate-900 dark:bg-white rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
      </div>
      <span className="text-slate-900 dark:text-white text-sm font-medium ml-2 tracking-widest uppercase">AI 思考中</span>
+  </div>
+);
+
+const Suggestion = () => (
+  <div className="flex items-center gap-3 bg-white/95 dark:bg-black/95 backdrop-blur-xl px-6 py-4 rounded-full border border-slate-200/50 dark:border-zinc-800/50 shadow-[0_8px_32px_rgba(0,0,0,0.08)] ring-1 ring-black/5 dark:ring-white/5 animate-in fade-in slide-in-from-bottom-4 duration-300">
+     <div className="p-1.5 bg-blue-500/10 rounded-full">
+       <Mic className="w-5 h-5 text-blue-500" />
+     </div>
+     <div className="flex flex-col">
+        <span className="text-slate-900 dark:text-white text-sm font-medium">
+          打字累了吗？试试语音输入
+        </span>
+        <span className="text-slate-500 dark:text-slate-400 text-xs">
+          更加快速精准
+        </span>
+     </div>
   </div>
 );
 
