@@ -14,6 +14,19 @@ class IPCHandlers {
     this.hotkeyManager = managers.hotkeyManager;
     this.logger = managers.logger; // 添加logger引用
     
+    // 监听打字建议事件
+    if (this.hotkeyManager) {
+      this.hotkeyManager.on('typing-suggestion', () => {
+        if (this.windowManager) {
+          this.windowManager.showTypingSuggestion();
+        }
+      });
+      
+      // 初始化打字监控设置
+      const enabled = this.databaseManager.getSetting('typing_monitor_enabled', true);
+      this.hotkeyManager.setTypingMonitorEnabled(enabled);
+    }
+
     this.setupHandlers();
   }
 
@@ -152,6 +165,13 @@ class IPCHandlers {
         }
       }
       
+      // 如果是打字监控设置改变
+      if (key === 'typing_monitor_enabled') {
+        if (this.hotkeyManager) {
+          this.hotkeyManager.setTypingMonitorEnabled(value);
+        }
+      }
+
       return result;
     });
 
@@ -245,6 +265,36 @@ class IPCHandlers {
     ipcMain.handle("clear-clipboard-history", () => {
       // TODO: 实现清除剪贴板历史功能
       return true;
+    });
+
+    // 热词管理
+    ipcMain.handle("get-hotwords", () => {
+      try {
+        return { success: true, hotwords: this.databaseManager.getHotwords() };
+      } catch (error) {
+        this.logger.error("获取热词失败:", error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    ipcMain.handle("add-hotword", (event, word) => {
+      try {
+        this.databaseManager.addHotword(word);
+        return { success: true };
+      } catch (error) {
+        this.logger.error("添加热词失败:", error);
+        return { success: false, error: error.message };
+      }
+    });
+
+    ipcMain.handle("delete-hotword", (event, id) => {
+      try {
+        this.databaseManager.deleteHotword(id);
+        return { success: true };
+      } catch (error) {
+        this.logger.error("删除热词失败:", error);
+        return { success: false, error: error.message };
+      }
     });
 
     // 窗口管理相关
@@ -898,15 +948,39 @@ class IPCHandlers {
       // 导入默认提示词模板
       const { defaultOptimizePrompt, defaultCommandPrompt, defaultAskPrompt } = require('./promptTemplates');
 
+      // 获取热词并生成提示词指令
+      let hotwordsInstruction = "";
+      try {
+        const hotwords = this.databaseManager.getHotwords();
+        if (hotwords && hotwords.length > 0) {
+          const wordsList = hotwords.map(h => h.word).join('、');
+          hotwordsInstruction = `\n\n## 热词修正\n请特别注意以下热词（用户自定义）：[${wordsList}]。\n如果原文中出现这些词的谐音或发音相似的错误，请务必修正为这些热词。`;
+        }
+      } catch (err) {
+        this.logger.warn("获取热词失败，将跳过热词注入:", err);
+      }
+
       let prompt;
       if (mode === 'command' && selectedText) {
         // 命令模式：使用命令提示词
         prompt = customCommandPrompt ? customCommandPrompt : defaultCommandPrompt;
         prompt = prompt.replace(/\${selectedText}/g, selectedText).replace(/\${text}/g, text);
+        
+        // 注入热词指令
+        if (hotwordsInstruction) {
+          prompt = prompt.replace('## 输入与输出', `${hotwordsInstruction}\n\n## 输入与输出`);
+        }
       } else if (mode === 'ask') {
         // 提问模式：使用提问提示词
         prompt = customAskPrompt ? customAskPrompt : defaultAskPrompt;
         prompt = prompt.replace(/\${text}/g, text);
+        
+        // 注入热词指令 (提问模式通常不需要热词修正，但用户如果问的是关于这些词的问题，可能需要？
+        // 用户需求主要针对语音转文字识别错误，提问模式的输入也是语音转文字的结果。
+        // 所以注入是有益的，尤其是在"参考文本"部分。)
+        if (hotwordsInstruction) {
+           prompt = prompt.replace('## 输入与输出', `${hotwordsInstruction}\n\n## 输入与输出`);
+        }
         
         // Handle selected text in ask mode
         if (selectedText && selectedText.trim().length > 0) {
@@ -924,6 +998,11 @@ class IPCHandlers {
         // 优化模式：使用优化提示词
         let basePrompt = customOptimizePrompt ? customOptimizePrompt : defaultOptimizePrompt;
         prompt = basePrompt.replace(/\${text}/g, text);
+        
+        // 注入热词指令
+        if (hotwordsInstruction) {
+           prompt = prompt.replace('## 输入与输出', `${hotwordsInstruction}\n\n## 输入与输出`);
+        }
       }
 
       const baseUrl = await this.databaseManager.getSetting('ai_base_url') || 'https://dashscope.aliyuncs.com/compatible-mode/v1';
