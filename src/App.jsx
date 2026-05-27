@@ -222,7 +222,7 @@ export default function App() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `TalkType转录_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`;
+        a.download = `Voke转录_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`;
         a.click();
         URL.revokeObjectURL(url);
       }

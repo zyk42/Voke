@@ -92,7 +92,7 @@ class EnvironmentManager {
   }
 
   getDataDirectory() {
-    const appName = "TalkType";
+    const appName = "Voke";
     
     switch (process.platform) {
       case "win32":

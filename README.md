@@ -1,8 +1,8 @@
 <div align="center">
 
-# TalkType
+# Voke
 
-**TalkType · AI 语音转录助手**
+**Voke · AI 语音转录助手**
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-green)
 [中文](README.md) | [English](README_EN.md)
@@ -10,7 +10,7 @@
 
 <br/>
 
-> TalkType 是一款基于 Electron 开发的跨平台应用，支持 Windows、macOS 和 Linux 系统。将ASR与LLM结合，不仅能“听写”，更能“理解”、“润色”、“提问”，从而高效产出高质量文本。
+> Voke 是一款基于 Electron 开发的跨平台应用，支持 Windows、macOS 和 Linux 系统。将ASR与LLM结合，不仅能“听写”，更能“理解”、“润色”、“提问”，从而高效产出高质量文本。
 
 ---
 
@@ -79,9 +79,9 @@
 
 ## 📥 下载安装
 
-TalkType 提供 Windows、macOS 和 Linux 三大平台的安装包。
+Voke 提供 Windows、macOS 和 Linux 三大平台的安装包。
 
-- **Windows**: [点击下载 TalkType v1.0.2](https://github.com/zyk42/TalkType/releases/download/v1.0.2/TalkType.Setup.1.0.2.exe)
+- **Windows**: [点击下载 Voke v1.0.2](https://github.com/zyk42/Voke/releases/download/v1.0.2/Voke.Setup.1.0.2.exe)
 - **macOS**: *(待发布)*
 - **Linux**: *(待发布)*
 
@@ -95,8 +95,8 @@ TalkType 提供 Windows、macOS 和 Linux 三大平台的安装包。
 
 ### 2. 获取源码
 ```bash
-git clone https://github.com/zyk/TalkType.git
-cd TalkType
+git clone https://github.com/zyk/Voke.git
+cd Voke
 ```
 
 ### 3. 安装依赖

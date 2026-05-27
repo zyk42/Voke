@@ -236,7 +236,7 @@ export const HomePage = ({
       <div className="flex-shrink-0 flex items-center justify-between px-6 py-3 border-b border-slate-200/60 dark:border-zinc-800 bg-white/80 dark:bg-black/90 backdrop-blur-md shadow-sm">
         <div className="flex flex-col">
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight chinese-title">
-            TalkType — AI 语音转录助手
+            Voke — AI 语音转录助手
           </h1>
         </div>
       </div>

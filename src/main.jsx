@@ -47,7 +47,7 @@ class ErrorBoundary extends React.Component {
             </div>
             
             <p className="text-gray-600 mb-4">
-              TalkType遇到了一个意外错误。请尝试重启应用。
+              Voke遇到了一个意外错误。请尝试重启应用。
             </p>
             
             {process.env.NODE_ENV === 'development' && (

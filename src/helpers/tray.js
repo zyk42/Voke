@@ -37,7 +37,7 @@ class TrayManager {
       }
 
       this.tray = new Tray(trayIcon);
-      this.tray.setToolTip("TalkType - 智能语音写作");
+      this.tray.setToolTip("Voke - 智能语音写作");
 
       // 创建上下文菜单
       this.updateContextMenu();
@@ -105,14 +105,14 @@ class TrayManager {
 
     switch (status) {
       case "recording":
-        this.tray.setToolTip("TalkType - 正在录音...");
+        this.tray.setToolTip("Voke - 正在录音...");
         break;
       case "processing":
-        this.tray.setToolTip("TalkType - 正在处理...");
+        this.tray.setToolTip("Voke - 正在处理...");
         break;
       case "ready":
       default:
-        this.tray.setToolTip("TalkType - 语音转文字");
+        this.tray.setToolTip("Voke - 语音转文字");
         break;
     }
   }

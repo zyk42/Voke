@@ -32,9 +32,9 @@ const HotkeyManager = require("./src/helpers/hotkeyManager");
 const IPCHandlers = require("./src/helpers/ipcHandlers");
 
 // 设置应用名称和ID (Windows上用于任务栏分组和通知)
-app.setName('TalkType');
+app.setName('Voke');
 if (process.platform === 'win32') {
-  app.setAppUserModelId('com.talktype.app');
+  app.setAppUserModelId('com.voke.app');
 }
 
 // 初始化管理器

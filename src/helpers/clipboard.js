@@ -147,7 +147,7 @@ class ClipboardManager {
   async copyWindows() {
     return new Promise((resolve, reject) => {
       // 优化：使用 VBScript 替代 PowerShell
-      const vbsPath = path.join(os.tmpdir(), 'TalkType_copy_v2.vbs');
+      const vbsPath = path.join(os.tmpdir(), 'Voke_copy_v2.vbs');
       // 优化：如果文件已存在，不再重复写入
       if (!fs.existsSync(vbsPath)) {
         const vbsContent = 'Set WshShell = WScript.CreateObject("WScript.Shell")\nWScript.Sleep 50\nWshShell.SendKeys "^c"';
@@ -291,7 +291,7 @@ class ClipboardManager {
   async pasteWindows(originalClipboard) {
     return new Promise((resolve, reject) => {
       // 优化：使用 VBScript 替代 PowerShell
-      const vbsPath = path.join(os.tmpdir(), 'TalkType_paste.vbs');
+      const vbsPath = path.join(os.tmpdir(), 'Voke_paste.vbs');
       // 优化：如果文件已存在，不再重复写入
       if (!fs.existsSync(vbsPath)) {
         const vbsContent = 'Set WshShell = WScript.CreateObject("WScript.Shell")\nWScript.Sleep 100\nWshShell.SendKeys "^v"';
@@ -422,17 +422,17 @@ class ClipboardManager {
 
     let dialogMessage;
     if (isStuckPermission) {
-      dialogMessage = `🔒 TalkType需要辅助功能权限，但看起来您可能有来自先前版本的旧权限。
+      dialogMessage = `🔒 Voke需要辅助功能权限，但看起来您可能有来自先前版本的旧权限。
 
-❗ 常见问题：如果您重新构建/重新安装了TalkType，旧权限可能"卡住"并阻止新权限。
+❗ 常见问题：如果您重新构建/重新安装了Voke，旧权限可能"卡住"并阻止新权限。
 
 🔧 解决方法：
 1. 打开系统设置 → 隐私与安全性 → 辅助功能
-2. 查找任何旧的"TalkType"条目并删除它们（点击 - 按钮）
+2. 查找任何旧的"Voke"条目并删除它们（点击 - 按钮）
 3. 同时删除任何显示"Electron"或名称不明确的条目
-4. 点击 + 按钮并手动添加新的TalkType应用
+4. 点击 + 按钮并手动添加新的Voke应用
 5. 确保复选框已启用
-6. 重启TalkType
+6. 重启Voke
 
 ⚠️ 这在开发期间重新构建应用时特别常见。
 
@@ -440,7 +440,7 @@ class ClipboardManager {
 
 您想现在打开系统设置吗？`;
     } else {
-      dialogMessage = `🔒 TalkType需要辅助功能权限才能将文本粘贴到其他应用程序中。
+      dialogMessage = `🔒 Voke需要辅助功能权限才能将文本粘贴到其他应用程序中。
 
 📋 当前状态：剪贴板复制有效，但粘贴（Cmd+V 模拟）失败。
 
@@ -448,8 +448,8 @@ class ClipboardManager {
 1. 打开系统设置（或较旧 macOS 上的系统偏好设置）
 2. 转到隐私与安全性 → 辅助功能
 3. 点击锁图标并输入您的密码
-4. 将TalkType添加到列表中并勾选复选框
-5. 重启TalkType
+4. 将Voke添加到列表中并勾选复选框
+5. 重启Voke
 
 ⚠️ 没有此权限，听写文本将只复制到剪贴板但不会自动粘贴。
 

@@ -112,7 +112,7 @@ export const HotwordsPage = () => {
                 type="text"
                 value={newHotword}
                 onChange={(e) => setNewHotword(e.target.value)}
-                placeholder="输入词语，例如：TalkType..."
+                placeholder="输入词语，例如：Voke..."
                 className="flex-1 px-4 py-2 rounded-lg border border-slate-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button

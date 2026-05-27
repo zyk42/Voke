@@ -51,13 +51,13 @@ export const AboutPage = ({ isEmbedded = false }) => {
               <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
                 <div className="relative w-32 h-32 bg-white dark:bg-zinc-800 rounded-2xl shadow-xl flex items-center justify-center p-2 border border-slate-100 dark:border-zinc-700">
-                  <img src={logo} alt="TalkType Logo" className="w-full h-full object-contain rounded-xl" />
+                  <img src={logo} alt="Voke Logo" className="w-full h-full object-contain rounded-xl" />
                 </div>
               </div>
               
               <div className="space-y-2">
                 <h2 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">
-                  TalkType
+                  Voke
                 </h2>
                 <div className="flex items-center justify-center gap-2">
                   <span className="px-3 py-1 bg-slate-100 dark:bg-zinc-800 rounded-full text-sm font-medium text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-zinc-700">
@@ -70,7 +70,7 @@ export const AboutPage = ({ isEmbedded = false }) => {
               </div>
 
               <p className="max-w-2xl text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
-                TalkType 是一款基于 Electron 开发的跨平台应用，支持 Windows、macOS 和 Linux 系统。将ASR与LLM结合，不仅能“听写”，更能“理解”、“润色”、“提问”，从而高效产出高质量文本。
+                Voke 是一款基于 Electron 开发的跨平台应用，支持 Windows、macOS 和 Linux 系统。将ASR与LLM结合，不仅能“听写”，更能“理解”、“润色”、“提问”，从而高效产出高质量文本。
               </p>
             </div>
 
@@ -101,7 +101,7 @@ export const AboutPage = ({ isEmbedded = false }) => {
                   icon={<Github size={20} />}
                   label="GitHub 仓库"
                   subLabel="查看源码、提交 Issue 或贡献代码"
-                  url="https://github.com/zyk42/TalkType"
+                  url="https://github.com/zyk42/Voke"
                 />
               </div>
             </div>

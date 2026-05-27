@@ -1,8 +1,8 @@
 <div align="center">
 
-# TalkType
+# Voke
 
-**TalkType · AI Voice Transcription Assistant**
+**Voke · AI Voice Transcription Assistant**
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-green)
 
@@ -12,7 +12,7 @@
 
 <br/>
 
-> TalkType is a cross-platform application based on Electron, supporting Windows, macOS, and Linux systems. Combining ASR (Automatic Speech Recognition) with LLM (Large Language Models), it not only "transcribes" but also "understands", "polishes", and "answers", helping you efficiently produce high-quality text.
+> Voke is a cross-platform application based on Electron, supporting Windows, macOS, and Linux systems. Combining ASR (Automatic Speech Recognition) with LLM (Large Language Models), it not only "transcribes" but also "understands", "polishes", and "answers", helping you efficiently produce high-quality text.
 
 ---
 
@@ -81,9 +81,9 @@
 
 ## 📥 Download & Install
 
-TalkType provides installers for Windows, macOS, and Linux platforms.
+Voke provides installers for Windows, macOS, and Linux platforms.
 
-- **Windows**: [Download](https://github.com/zyk42/TalkType/releases/download/v1.0.2/TalkType.Setup.1.0.2.exe)
+- **Windows**: [Download](https://github.com/zyk42/Voke/releases/download/v1.0.2/Voke.Setup.1.0.2.exe)
 - **macOS**: *(Coming Soon)*
 - **Linux**: *(Coming Soon)*
 
@@ -97,8 +97,8 @@ If you are a developer or want to experience the latest features, you can run fr
 
 ### 2. Get Source Code
 ```bash
-git clone https://github.com/zyk/TalkType.git
-cd TalkType
+git clone https://github.com/zyk/Voke.git
+cd Voke
 ```
 
 ### 3. Install Dependencies

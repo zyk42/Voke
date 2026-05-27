@@ -35,7 +35,7 @@ export const usePermissions = (showAlertDialog) => {
   const testAccessibilityPermission = useCallback(async () => {
     try {
       // 尝试粘贴测试文本
-      await window.electronAPI.pasteText("TalkType辅助功能测试");
+      await window.electronAPI.pasteText("Voke辅助功能测试");
       setAccessibilityPermissionGranted(true);
       if (showAlertDialog) {
         showAlertDialog({

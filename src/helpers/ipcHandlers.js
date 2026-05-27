@@ -688,7 +688,7 @@ class IPCHandlers {
     ipcMain.handle("test-accessibility-permission", async () => {
       try {
         // 使用测试文本检查权限
-        await this.clipboardManager.pasteText("TalkType权限测试");
+        await this.clipboardManager.pasteText("Voke权限测试");
         return { success: true, message: "辅助功能权限测试成功" };
       } catch (error) {
         this.logger.error("辅助功能权限测试失败:", error);

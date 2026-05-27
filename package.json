@@ -1,8 +1,8 @@
 {
-  "name": "talktype",
-  "productName": "TalkType",
+  "name": "voke",
+  "productName": "Voke",
   "version": "1.0.0",
-  "description": "TalkType - AI 语音转录助手。基于语音转写+AI润色+指令修改的智能写作助手。",
+  "description": "Voke - AI 智能语音交互助手。随时随地唤起 AI，语音转文字、LLM 问答、Agent 调度一体化。",
   "main": "main.js",
   "private": true,
   "scripts": {
@@ -21,8 +21,8 @@
     "build:linux": "electron-builder --linux",
     "pack": "npm run build:renderer && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --dir",
     "dist": "npm run build:renderer && electron-builder",
-    "pack:win": "npm run build:renderer && electron-packager . TalkType --platform=win32 --arch=x64 --out=release-builds-v2 --overwrite --prune=true --icon=assets/icon.ico",
-    "pack:mac": "npm run build:renderer && electron-packager . TalkType --platform=darwin --arch=x64 --out=release-builds-v2 --overwrite --prune=true --icon=assets/icon.icns",
+    "pack:win": "npm run build:renderer && electron-packager . Voke --platform=win32 --arch=x64 --out=release-builds-v2 --overwrite --prune=true --icon=assets/icon.ico",
+    "pack:mac": "npm run build:renderer && electron-packager . Voke --platform=darwin --arch=x64 --out=release-builds-v2 --overwrite --prune=true --icon=assets/icon.icns",
     "lint": "cd src && eslint .",
     "preview": "cd src && vite preview",
     "clean": "node cleanup.js"
@@ -107,8 +107,8 @@
     "uuid": "^13.0.0"
   },
   "build": {
-    "appId": "com.talktype.app",
-    "productName": "TalkType",
+    "appId": "com.voke.app",
+    "productName": "Voke",
     "directories": {
       "output": "dist"
     },
@@ -163,7 +163,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "TalkType"
+      "shortcutName": "Voke"
     },
     "linux": {
       "icon": "assets/icon.png",
